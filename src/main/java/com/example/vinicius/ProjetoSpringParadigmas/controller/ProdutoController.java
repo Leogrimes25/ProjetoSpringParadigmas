@@ -1,5 +1,4 @@
 package com.example.vinicius.ProjetoSpringParadigmas.controller;
-
 import com.example.vinicius.ProjetoSpringParadigmas.model.Produto;
 import com.example.vinicius.ProjetoSpringParadigmas.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +33,22 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(produto);
 
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<Produto> atualizarPorId(@PathVariable String id, @RequestBody Produto produto) {
+        Optional<Produto> produtoOptional = produtoRepository.findById(id);
+        if (produtoOptional.isPresent()) {
+            Produto _produto = produtoOptional.get();
+            _produto.setNome(produto.getNome());
+            _produto.setMarca(produto.getMarca());
+            _produto.setValor(produto.getValor());
+            _produto.setEstoque(produto.getEstoque());
+            _produto.setCategoria(produto.getCategoria());
+
+            return new ResponseEntity<>(produtoRepository.save(_produto), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletarDocumento(@PathVariable String id) {
         Optional<Produto> produtoOptional = produtoRepository.findById(id);
@@ -45,7 +60,6 @@ public class ProdutoController {
         }
     }
 }
-
 
 
 
